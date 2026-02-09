@@ -54,11 +54,16 @@ export function SegmentDisplay({
                 type="button"
                 onClick={() => onSelectSegment(segment.id)}
                 className={cn(
-                  "inline-flex flex-col items-center rounded-md border px-2 py-1 font-mono text-sm transition-all cursor-pointer",
+                  "relative inline-flex flex-col items-center rounded-md border px-2 py-1 font-mono text-sm transition-all cursor-pointer",
                   colorClass,
                   isSelected && "ring-2 ring-ring ring-offset-1 ring-offset-background",
                 )}
               >
+                {segment.text.length > 1 && (
+                  <span className="absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full bg-foreground/80 text-background text-[9px] font-bold font-sans leading-none">
+                    {segment.text.length}
+                  </span>
+                )}
                 <span className="whitespace-pre">{segment.text}</span>
                 <span className="text-[10px] opacity-70 font-sans">
                   {patternDef ? t[patternDef.labelKey] : segment.patternType}

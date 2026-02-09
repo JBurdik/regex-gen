@@ -35,6 +35,13 @@ function getActiveQuantifierPreset(q?: Quantifier): QuantifierPreset {
   return "one";
 }
 
+// Single-char pattern types (match one character, need quantifier for multi-char segments)
+const SINGLE_CHAR_PATTERNS: Set<PatternType> = new Set([
+  "digit", "letter", "alphanumeric", "word_char", "whitespace",
+  "unicode_letter", "czech_letter", "czech_alphanumeric",
+  "any_char", "custom_class", "uppercase", "lowercase",
+]);
+
 const GROUP_OPTIONS: { value: GroupType | "none"; label: string; descKey: keyof TranslationDict }[] = [
   { value: "none", label: "None", descKey: "groupNone" },
   { value: "capture", label: "()", descKey: "groupCapture" },
@@ -55,8 +62,13 @@ export function PatternSelector({
   return (
     <div className="space-y-3">
       <div>
-        <div className="mb-1.5 text-xs font-medium text-muted-foreground">
+        <div className="mb-1.5 text-xs font-medium text-muted-foreground flex items-center gap-1.5">
           {t.patternFor} <span className="font-mono text-foreground">{segment.text}</span>
+          {segment.text.length > 1 && (
+            <span className="inline-flex items-center rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-semibold tabular-nums">
+              {segment.text.length} chars
+            </span>
+          )}
         </div>
       </div>
 
@@ -72,9 +84,15 @@ export function PatternSelector({
                 <button
                   key={p.type}
                   type="button"
-                  onClick={() =>
-                    onUpdateSegment({ patternType: p.type as PatternType })
-                  }
+                  onClick={() => {
+                    const newType = p.type as PatternType;
+                    const updates: Partial<Segment> = { patternType: newType };
+                    // Auto-set {exactly: length} when switching to single-char pattern on multi-char text
+                    if (segment.text.length > 1 && SINGLE_CHAR_PATTERNS.has(newType)) {
+                      updates.quantifier = { exactly: segment.text.length };
+                    }
+                    onUpdateSegment(updates);
+                  }}
                   className={cn(
                     "flex flex-col items-start rounded-md border px-2 py-1 text-left text-xs transition-colors cursor-pointer hover:bg-muted",
                     segment.patternType === p.type &&
