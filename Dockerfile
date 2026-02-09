@@ -19,15 +19,15 @@ COPY . .
 RUN pnpm --filter web build
 
 # --- Production ---
-FROM base AS production
+FROM node:22-alpine AS production
+WORKDIR /app
 ENV NODE_ENV=production
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
-COPY --from=deps /app/packages/env/node_modules ./packages/env/node_modules
 COPY --from=build /app/apps/web/dist ./apps/web/dist
+COPY apps/web/server.js apps/web/server.js
 COPY apps/web/package.json apps/web/package.json
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY packages/env/ packages/env/
-COPY packages/config/ packages/config/
-# EXPOSE 3000
-CMD ["node", "apps/web/dist/server/server.js"]
+COPY package.json ./
+
+CMD ["node", "apps/web/server.js"]

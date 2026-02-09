@@ -8,10 +8,13 @@ const STORAGE_KEY = "regex-gen-locale";
 const dictionaries = { en, cs } as const;
 
 function detectLocale(): Locale {
-  if (typeof window === "undefined") return "en";
+  if (typeof window === "undefined" || typeof localStorage === "undefined")
+    return "en";
 
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored && LOCALES.includes(stored as Locale)) return stored as Locale;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored && LOCALES.includes(stored as Locale)) return stored as Locale;
+  } catch {}
 
   const browserLang = navigator.language.toLowerCase();
   if (browserLang.startsWith("cs")) return "cs";
@@ -23,7 +26,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   function setLocale(next: Locale) {
     setLocaleState(next);
-    localStorage.setItem(STORAGE_KEY, next);
+    try { localStorage.setItem(STORAGE_KEY, next); } catch {}
   }
 
   useEffect(() => {
