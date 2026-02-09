@@ -11,14 +11,29 @@ type PatternSelectorProps = {
   onUpdateSegment: (updates: Partial<Segment>) => void;
 };
 
-const QUANTIFIER_OPTIONS: { value: Quantifier; label: string; descKey: keyof TranslationDict }[] =
+type QuantifierPreset = "one" | "one_or_more" | "zero_or_more" | "optional" | "lazy" | "exact" | "range";
+
+const QUANTIFIER_OPTIONS: { value: QuantifierPreset; label: string; descKey: keyof TranslationDict }[] =
   [
     { value: "one", label: "One", descKey: "quantOne" },
     { value: "one_or_more", label: "One+", descKey: "quantOnePlus" },
     { value: "zero_or_more", label: "Zero+", descKey: "quantZeroPlus" },
     { value: "optional", label: "Optional", descKey: "quantOptional" },
     { value: "lazy", label: "Lazy", descKey: "quantLazy" },
+    { value: "exact", label: "{n}", descKey: "quantExact" },
+    { value: "range", label: "{n,m}", descKey: "quantRange" },
   ];
+
+function getActiveQuantifierPreset(q?: Quantifier): QuantifierPreset {
+  if (!q || q === "one") return "one";
+  if (q === "one_or_more") return "one_or_more";
+  if (q === "zero_or_more") return "zero_or_more";
+  if (q === "optional") return "optional";
+  if (q === "lazy") return "lazy";
+  if (typeof q === "object" && "exactly" in q) return "exact";
+  if (typeof q === "object" && "min" in q) return "range";
+  return "one";
+}
 
 const GROUP_OPTIONS: { value: GroupType | "none"; label: string; descKey: keyof TranslationDict }[] = [
   { value: "none", label: "None", descKey: "groupNone" },
@@ -99,22 +114,82 @@ export function PatternSelector({
           {t.quantifierLabel}
         </div>
         <div className="flex flex-wrap gap-1">
-          {QUANTIFIER_OPTIONS.map((q) => (
-            <button
-              key={q.label}
-              type="button"
-              onClick={() => onUpdateSegment({ quantifier: q.value })}
-              className={cn(
-                "rounded-md border px-2 py-0.5 text-xs transition-colors cursor-pointer hover:bg-muted",
-                (segment.quantifier ?? "one") === q.value &&
-                  "border-ring bg-muted",
-              )}
-              title={t[q.descKey]}
-            >
-              {q.label}
-            </button>
-          ))}
+          {QUANTIFIER_OPTIONS.map((q) => {
+            const activePreset = getActiveQuantifierPreset(segment.quantifier);
+            return (
+              <button
+                key={q.value}
+                type="button"
+                onClick={() => {
+                  if (q.value === "exact") {
+                    const current = typeof segment.quantifier === "object" && "exactly" in segment.quantifier ? segment.quantifier.exactly : 1;
+                    onUpdateSegment({ quantifier: { exactly: current } });
+                  } else if (q.value === "range") {
+                    const current = typeof segment.quantifier === "object" && "min" in segment.quantifier ? segment.quantifier : { min: 1, max: 3 };
+                    onUpdateSegment({ quantifier: current });
+                  } else {
+                    onUpdateSegment({ quantifier: q.value });
+                  }
+                }}
+                className={cn(
+                  "rounded-md border px-2 py-0.5 text-xs transition-colors cursor-pointer hover:bg-muted",
+                  activePreset === q.value && "border-ring bg-muted",
+                )}
+                title={t[q.descKey]}
+              >
+                {q.label}
+              </button>
+            );
+          })}
         </div>
+        {typeof segment.quantifier === "object" && "exactly" in segment.quantifier && (
+          <div className="mt-1.5 flex items-center gap-1.5">
+            <Input
+              type="number"
+              min={1}
+              value={segment.quantifier.exactly}
+              onChange={(e) => {
+                const v = parseInt(e.target.value, 10);
+                if (v > 0) onUpdateSegment({ quantifier: { exactly: v } });
+              }}
+              placeholder={t.quantExactPlaceholder}
+              className="font-mono text-xs h-7 w-16"
+            />
+            <span className="text-xs text-muted-foreground">{t.quantExact}</span>
+          </div>
+        )}
+        {typeof segment.quantifier === "object" && "min" in segment.quantifier && "max" in segment.quantifier && (
+          <div className="mt-1.5 flex items-center gap-1.5">
+            <Input
+              type="number"
+              min={0}
+              value={segment.quantifier.min}
+              onChange={(e) => {
+                const v = parseInt(e.target.value, 10);
+                if (v >= 0 && typeof segment.quantifier === "object" && "max" in segment.quantifier) {
+                  onUpdateSegment({ quantifier: { min: v, max: segment.quantifier.max } });
+                }
+              }}
+              placeholder={t.quantMinPlaceholder}
+              className="font-mono text-xs h-7 w-16"
+            />
+            <span className="text-xs text-muted-foreground">-</span>
+            <Input
+              type="number"
+              min={0}
+              value={segment.quantifier.max}
+              onChange={(e) => {
+                const v = parseInt(e.target.value, 10);
+                if (v >= 0 && typeof segment.quantifier === "object" && "min" in segment.quantifier) {
+                  onUpdateSegment({ quantifier: { min: segment.quantifier.min, max: v } });
+                }
+              }}
+              placeholder={t.quantMaxPlaceholder}
+              className="font-mono text-xs h-7 w-16"
+            />
+            <span className="text-xs text-muted-foreground">{t.quantRange}</span>
+          </div>
+        )}
       </div>
 
       <Separator />

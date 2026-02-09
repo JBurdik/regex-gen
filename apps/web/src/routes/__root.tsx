@@ -59,7 +59,7 @@ function RootDocument() {
           <I18nProvider>
             <div className="grid h-svh grid-rows-[auto_1fr_auto]">
               <Header />
-              <main className="flex items-center justify-center overflow-y-auto">
+              <main className="flex justify-center overflow-y-auto">
                 <Outlet />
               </main>
               <footer className="border-t py-3 text-center text-xs text-muted-foreground">

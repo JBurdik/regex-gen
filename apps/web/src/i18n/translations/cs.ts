@@ -142,6 +142,13 @@ export const cs: TranslationDict = {
   historyDeleted: "Záznam smazán",
   historyPattern: "Vzor",
 
+  // Quantifier - exact/range
+  quantExact: "Přesně",
+  quantRange: "Rozsah",
+  quantExactPlaceholder: "n",
+  quantMinPlaceholder: "min",
+  quantMaxPlaceholder: "max",
+
   // Cheat sheet
   cheatSheetTitle: "Regex tahák",
 

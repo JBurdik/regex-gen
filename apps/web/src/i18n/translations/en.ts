@@ -140,6 +140,13 @@ export const en = {
   historyDeleted: "Entry deleted",
   historyPattern: "Pattern",
 
+  // Quantifier - exact/range
+  quantExact: "Exact",
+  quantRange: "Range",
+  quantExactPlaceholder: "n",
+  quantMinPlaceholder: "min",
+  quantMaxPlaceholder: "max",
+
   // Cheat sheet
   cheatSheetTitle: "Regex Cheat Sheet",
 

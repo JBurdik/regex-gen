@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Save } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ExampleInput } from "@/components/example-input";
 import { HistoryPanel } from "@/components/history-panel";
@@ -40,6 +40,10 @@ function HomeComponent() {
 
   const handleSelectSegment = useCallback((id: string) => {
     setSelectedSegmentId((prev) => (prev === id ? null : id));
+  }, []);
+
+  const handleDismissPopover = useCallback(() => {
+    setSelectedSegmentId(null);
   }, []);
 
   const handleMerge = useCallback(
@@ -99,6 +103,7 @@ function HomeComponent() {
           selectedSegmentId={selectedSegmentId}
           selectedSegment={selectedSegment}
           onSelectSegment={handleSelectSegment}
+          onDismiss={handleDismissPopover}
           onMerge={handleMerge}
           onUpdateSegment={handleUpdateSegment}
         />
@@ -109,28 +114,30 @@ function HomeComponent() {
           onLanguageChange={setSelectedLanguage}
         />
 
-        {pattern && (
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={saveMutation.isPending}
-            className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted transition-colors cursor-pointer disabled:opacity-50"
-          >
-            <Save className="size-4" />
-            {t.historySave}
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {pattern && (
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={saveMutation.isPending}
+              className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted transition-colors cursor-pointer disabled:opacity-50"
+            >
+              <Save className="size-4" />
+              {t.historySave}
+            </button>
+          )}
+
+          <CheatSheet />
+        </div>
 
         <LiveTester
           pattern={pattern}
           testText={testText}
           onTestTextChange={setTestText}
         />
-
-        <HistoryPanel onRestore={handleRestore} />
-
-        <CheatSheet />
       </div>
+
+      <HistoryPanel onRestore={handleRestore} />
     </div>
   );
 }
@@ -140,6 +147,7 @@ function SegmentDisplayWithPopover({
   selectedSegmentId,
   selectedSegment,
   onSelectSegment,
+  onDismiss,
   onMerge,
   onUpdateSegment,
 }: {
@@ -147,35 +155,45 @@ function SegmentDisplayWithPopover({
   selectedSegmentId: string | null;
   selectedSegment: Segment | null;
   onSelectSegment: (id: string) => void;
+  onDismiss: () => void;
   onMerge: (indexA: number, indexB: number) => void;
   onUpdateSegment: (updates: Partial<Segment>) => void;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   return (
-    <Popover open={selectedSegment !== null}>
-      <PopoverTrigger
-        render={
-          <div />
-        }
+    <div ref={containerRef}>
+      <Popover
+        open={selectedSegment !== null}
+        onOpenChange={(open) => {
+          if (!open) onDismiss();
+        }}
       >
-        <SegmentDisplay
-          segments={segments}
-          selectedId={selectedSegmentId}
-          onSelectSegment={onSelectSegment}
-          onMerge={onMerge}
-        />
-      </PopoverTrigger>
-      {selectedSegment && (
-        <PopoverContent
-          side="bottom"
-          align="start"
-          className="w-80 max-h-[70vh] overflow-y-auto"
+        <PopoverTrigger
+          render={
+            <div />
+          }
         >
-          <PatternSelector
-            segment={selectedSegment}
-            onUpdateSegment={onUpdateSegment}
+          <SegmentDisplay
+            segments={segments}
+            selectedId={selectedSegmentId}
+            onSelectSegment={onSelectSegment}
+            onMerge={onMerge}
           />
-        </PopoverContent>
-      )}
-    </Popover>
+        </PopoverTrigger>
+        {selectedSegment && (
+          <PopoverContent
+            side="bottom"
+            align="start"
+            className="w-80 max-h-[70vh] overflow-y-auto"
+          >
+            <PatternSelector
+              segment={selectedSegment}
+              onUpdateSegment={onUpdateSegment}
+            />
+          </PopoverContent>
+        )}
+      </Popover>
+    </div>
   );
 }

@@ -1,9 +1,11 @@
-import { ChevronDown } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import type { TranslationDict } from "@/i18n/translations/en";
 import { useT } from "@/i18n";
 
@@ -84,13 +86,16 @@ export function CheatSheet() {
   const { t } = useT();
 
   return (
-    <Collapsible>
-      <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted transition-colors cursor-pointer">
+    <Sheet>
+      <SheetTrigger className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted transition-colors cursor-pointer">
+        <BookOpen className="size-4" />
         {t.cheatSheetTitle}
-        <ChevronDown className="size-4 transition-transform [[data-open]>&]:rotate-180" />
-      </CollapsibleTrigger>
-      <CollapsibleContent>
-        <div className="mt-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      </SheetTrigger>
+      <SheetContent side="right" className="overflow-y-auto">
+        <SheetHeader>
+          <SheetTitle>{t.cheatSheetTitle}</SheetTitle>
+        </SheetHeader>
+        <div className="space-y-4 p-4 pt-2">
           {CHEAT_DATA.map((category) => (
             <div key={category.titleKey} className="rounded-md border p-3">
               <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -98,7 +103,10 @@ export function CheatSheet() {
               </h3>
               <div className="space-y-1">
                 {category.entries.map((entry) => (
-                  <div key={entry.pattern} className="flex items-baseline gap-2 text-xs">
+                  <div
+                    key={entry.pattern}
+                    className="flex items-baseline gap-2 text-xs"
+                  >
                     <code className="shrink-0 rounded bg-muted px-1.5 py-0.5 font-mono text-[11px]">
                       {entry.pattern}
                     </code>
@@ -111,7 +119,7 @@ export function CheatSheet() {
             </div>
           ))}
         </div>
-      </CollapsibleContent>
-    </Collapsible>
+      </SheetContent>
+    </Sheet>
   );
 }
