@@ -1,0 +1,3 @@
+{
+  "extends": "@regex-gen/config/tsconfig.base.json"
+}
