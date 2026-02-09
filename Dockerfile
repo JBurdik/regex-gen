@@ -29,5 +29,5 @@ COPY apps/web/package.json apps/web/package.json
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/env/ packages/env/
 COPY packages/config/ packages/config/
-EXPOSE 3000
+# EXPOSE 3000
 CMD ["node", "apps/web/dist/server/server.js"]
