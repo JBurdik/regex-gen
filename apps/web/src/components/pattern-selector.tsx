@@ -61,7 +61,7 @@ export function PatternSelector({
                     onUpdateSegment({ patternType: p.type as PatternType })
                   }
                   className={cn(
-                    "flex flex-col items-start rounded-sm border px-2 py-1 text-left text-xs transition-colors cursor-pointer hover:bg-muted",
+                    "flex flex-col items-start rounded-md border px-2 py-1 text-left text-xs transition-colors cursor-pointer hover:bg-muted",
                     segment.patternType === p.type &&
                       "border-ring bg-muted",
                   )}
@@ -105,7 +105,7 @@ export function PatternSelector({
               type="button"
               onClick={() => onUpdateSegment({ quantifier: q.value })}
               className={cn(
-                "rounded-sm border px-2 py-0.5 text-xs transition-colors cursor-pointer hover:bg-muted",
+                "rounded-md border px-2 py-0.5 text-xs transition-colors cursor-pointer hover:bg-muted",
                 (segment.quantifier ?? "one") === q.value &&
                   "border-ring bg-muted",
               )}
@@ -134,7 +134,7 @@ export function PatternSelector({
                 })
               }
               className={cn(
-                "rounded-sm border px-2 py-0.5 text-xs font-mono transition-colors cursor-pointer hover:bg-muted",
+                "rounded-md border px-2 py-0.5 text-xs font-mono transition-colors cursor-pointer hover:bg-muted",
                 (segment.groupType ?? "none") === g.value &&
                   "border-ring bg-muted",
               )}

@@ -54,7 +54,7 @@ export function SegmentDisplay({
                 type="button"
                 onClick={() => onSelectSegment(segment.id)}
                 className={cn(
-                  "inline-flex flex-col items-center rounded-sm border px-2 py-1 font-mono text-sm transition-all cursor-pointer",
+                  "inline-flex flex-col items-center rounded-md border px-2 py-1 font-mono text-sm transition-all cursor-pointer",
                   colorClass,
                   isSelected && "ring-2 ring-ring ring-offset-1 ring-offset-background",
                 )}
@@ -68,7 +68,7 @@ export function SegmentDisplay({
                 <button
                   type="button"
                   onClick={() => onMerge(i, i + 1)}
-                  className="mx-0.5 h-6 w-3 flex items-center justify-center rounded-sm text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted transition-colors cursor-pointer text-xs"
+                  className="mx-0.5 h-6 w-3 flex items-center justify-center rounded text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted transition-colors cursor-pointer text-xs"
                   title={t.segmentsMerge}
                 >
                   +

@@ -83,8 +83,8 @@ const httpServer = createServer(async (req, res) => {
     const response = await server.fetch(request);
 
     res.writeHead(response.status, Object.fromEntries(response.headers));
-    const body = await response.arrayBuffer();
-    res.end(Buffer.from(body));
+    const responseBody = await response.arrayBuffer();
+    res.end(Buffer.from(responseBody));
   } catch (err) {
     console.error("Request error:", err);
     res.writeHead(500, { "Content-Type": "text/plain" });

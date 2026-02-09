@@ -27,7 +27,7 @@ export const getHistory = createServerFn({ method: "GET" }).handler(
 );
 
 export const saveHistory = createServerFn({ method: "POST" })
-  .validator(
+  .inputValidator(
     (data: {
       id: string;
       example: string;
@@ -51,7 +51,7 @@ export const saveHistory = createServerFn({ method: "POST" })
   });
 
 export const deleteHistory = createServerFn({ method: "POST" })
-  .validator((data: { id: string }) => data)
+  .inputValidator((data: { id: string }) => data)
   .handler(async ({ data }) => {
     const db = getDb();
     db.prepare("DELETE FROM history WHERE id = ?").run(data.id);

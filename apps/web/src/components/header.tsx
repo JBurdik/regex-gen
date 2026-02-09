@@ -22,7 +22,7 @@ export default function Header() {
   const current = LOCALE_OPTIONS.find((o) => o.value === locale)!;
 
   return (
-    <div>
+    <header className="border-b">
       <div className="flex flex-row items-center justify-between px-4 py-2">
         <Link to="/" className="flex items-center gap-2 font-semibold text-lg">
           <Regex className="size-5" />
@@ -54,7 +54,6 @@ export default function Header() {
           <ThemeToggle />
         </div>
       </div>
-      <hr />
-    </div>
+    </header>
   );
 }
