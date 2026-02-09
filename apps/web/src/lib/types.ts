@@ -60,3 +60,12 @@ export type Segment = {
   groupName?: string;
   customClass?: string;
 };
+
+export type HistoryEntry = {
+  id: string;
+  example: string;
+  segments: Segment[];
+  pattern: string;
+  language: Language;
+  createdAt: string;
+};

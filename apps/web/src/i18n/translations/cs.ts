@@ -132,6 +132,16 @@ export const cs: TranslationDict = {
   matchSingular: "shoda",
   matchPlural: "shod",
 
+  // History
+  historyTitle: "Historie",
+  historyEmpty: "Zatím žádné uložené vzory",
+  historySave: "Uložit do historie",
+  historySaved: "Vzor uložen do historie",
+  historyRestore: "Obnovit",
+  historyDelete: "Smazat",
+  historyDeleted: "Záznam smazán",
+  historyPattern: "Vzor",
+
   // Cheat sheet
   cheatSheetTitle: "Regex tahák",
 

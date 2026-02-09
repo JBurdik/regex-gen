@@ -64,9 +64,20 @@ const httpServer = createServer(async (req, res) => {
       if (value) headers.set(key, Array.isArray(value) ? value.join(", ") : value);
     }
 
+    // Collect request body for non-GET requests
+    let body = undefined;
+    if (req.method !== "GET" && req.method !== "HEAD") {
+      const chunks = [];
+      for await (const chunk of req) {
+        chunks.push(chunk);
+      }
+      body = Buffer.concat(chunks);
+    }
+
     const request = new Request(url.toString(), {
       method: req.method,
       headers,
+      body,
     });
 
     const response = await server.fetch(request);

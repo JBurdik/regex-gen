@@ -1,3 +1,4 @@
+import type { QueryClient } from "@tanstack/react-query";
 import {
   HeadContent,
   Outlet,
@@ -13,7 +14,9 @@ import { I18nProvider } from "@/i18n/provider";
 import Header from "../components/header";
 import appCss from "../index.css?url";
 
-export interface RouterAppContext {}
+export interface RouterAppContext {
+  queryClient: QueryClient;
+}
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({
   head: () => ({
@@ -59,7 +62,7 @@ function RootDocument() {
               <main className="flex items-center justify-center overflow-y-auto">
                 <Outlet />
               </main>
-              <footer className="py-3 text-center text-xs text-muted-foreground">
+              <footer className="border-t py-3 text-center text-xs text-muted-foreground">
                 <p>
                   v1.0.0 &middot; developed with ❤️ by{" "}
                   <a

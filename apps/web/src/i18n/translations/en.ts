@@ -130,6 +130,16 @@ export const en = {
   matchSingular: "match",
   matchPlural: "matches",
 
+  // History
+  historyTitle: "History",
+  historyEmpty: "No saved patterns yet",
+  historySave: "Save to History",
+  historySaved: "Pattern saved to history",
+  historyRestore: "Restore",
+  historyDelete: "Delete",
+  historyDeleted: "Entry deleted",
+  historyPattern: "Pattern",
+
   // Cheat sheet
   cheatSheetTitle: "Regex Cheat Sheet",
 

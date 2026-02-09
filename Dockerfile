@@ -1,4 +1,5 @@
 FROM node:22-alpine AS base
+RUN apk add --no-cache python3 make g++
 RUN corepack enable && corepack prepare pnpm@10.27.0 --activate
 WORKDIR /app
 
@@ -29,5 +30,7 @@ COPY --from=build /app/apps/web/dist ./apps/web/dist
 COPY apps/web/server.js apps/web/server.js
 COPY apps/web/package.json apps/web/package.json
 COPY package.json ./
+
+VOLUME ["/app/data"]
 
 CMD ["node", "apps/web/server.js"]
