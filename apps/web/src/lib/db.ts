@@ -14,6 +14,7 @@ export function getDb(): Database.Database {
     _db.exec(`
       CREATE TABLE IF NOT EXISTS history (
         id         TEXT PRIMARY KEY,
+        visitor_id TEXT NOT NULL DEFAULT '',
         example    TEXT NOT NULL,
         segments   TEXT NOT NULL,
         pattern    TEXT NOT NULL,
@@ -21,6 +22,7 @@ export function getDb(): Database.Database {
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       );
       CREATE INDEX IF NOT EXISTS idx_history_created_at ON history(created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_history_visitor ON history(visitor_id, created_at DESC);
     `);
   }
   return _db;
